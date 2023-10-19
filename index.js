@@ -34,16 +34,25 @@ async function run() {
 
         app.post('/add-product', async (req, res) => {
             const newProduct = req.body;
-            console.log(newCoffee);
-            const result = await productCollection.insertOne(newProduct);
-            res.json(result);
+            const result = await productCollection.insertOne({...newProduct, brand: req.body.brand.toLowerCase()});
+            res.json({result});
+        })
+
+        app.get('/get-product', async (req, res) => {
+
+            const query = req.query.brand;
+            const brand = query.toLowerCase();
+
+            const result = await productCollection.find({brand: brand}).toArray();
+           
+            res.json({result});
         })
 
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     }
-   
-    
+
+
     finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
