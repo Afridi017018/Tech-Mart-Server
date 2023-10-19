@@ -58,6 +58,27 @@ async function run() {
             res.json({result});
         })
 
+        
+        app.put('/update-product', async(req,res)=>{
+            const {_id, image, name, brand, type, price, description, rating}= req.body;
+            const query = { _id: ObjectId(_id) }
+            const update = {
+                $set: {
+                  image,
+                 name,
+                 brand,
+                 type,
+                 price,
+                 description,
+                 rating
+                },
+              };
+
+            const result = await productCollection.findOneAndUpdate(query, update)
+
+           res.json({result});
+        })
+
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     }
