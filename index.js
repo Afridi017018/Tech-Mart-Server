@@ -32,7 +32,15 @@ async function run() {
         // Send a ping to confirm a successful connection
         const productCollection = client.db("brand-shop").collection("product")
 
-        
+        app.post('/add-product', async (req, res) => {
+            const newProduct = req.body;
+            console.log(newCoffee);
+            const result = await productCollection.insertOne(newProduct);
+            res.json(result);
+        })
+
+
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
     }
    
     
