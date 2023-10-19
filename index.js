@@ -82,7 +82,21 @@ async function run() {
 
         app.post("/add-to-cart",async (req,res)=>{
             const result = await cartCollection.insertOne(req.body)
-            res.send(result)
+            res.json({result})
+        })
+
+        app.post("/get-cart-items",async (req,res)=>{
+            const {user} = req.body;
+            const result= await cartCollection.find({user}).toArray();
+            // console.log(data)
+            if(result.length>0)
+            {
+                res.json({result})
+            }
+            else{
+                res.json({ result: [] });
+            }
+            
         })
 
 
