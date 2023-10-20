@@ -32,12 +32,12 @@ async function run() {
         await client.connect();
         // Send a ping to confirm a successful connection
         const productCollection = client.db("brand-shop").collection("product");
-        const cartCollection= client.db("brand-shop").collection("cart");
+        const cartCollection = client.db("brand-shop").collection("cart");
 
         app.post('/add-product', async (req, res) => {
             const newProduct = req.body;
-            const result = await productCollection.insertOne({...newProduct, brand: req.body.brand.toLowerCase()});
-            res.json({result});
+            const result = await productCollection.insertOne({ ...newProduct, brand: req.body.brand.toLowerCase() });
+            res.json({ result });
         })
 
         app.get('/get-products', async (req, res) => {
@@ -45,67 +45,70 @@ async function run() {
             const query = req.query.brand;
             const brand = query.toLowerCase();
 
-            const result = await productCollection.find({brand: brand}).toArray();
-           
-            res.json({result});
+            const result = await productCollection.find({ brand: brand }).toArray();
+
+            res.json({ result });
         })
 
         app.get('/get-single-product/:productId', async (req, res) => {
 
-            const {productId} = req.params;
+            const { productId } = req.params;
 
             const result = await productCollection.findOne({ _id: ObjectId(productId) });
-           
-            res.json({result});
+
+            res.json({ result });
         })
 
-        
-        app.put('/update-product', async(req,res)=>{
-            const {_id, image, name, brand, type, price, description, rating}= req.body;
+
+        app.put('/update-product', async (req, res) => {
+            const { _id, image, name, brand, type, price, description, rating } = req.body;
             const query = { _id: ObjectId(_id) }
             const update = {
                 $set: {
-                  image,
-                 name,
-                 brand,
-                 type,
-                 price,
-                 description,
-                 rating
+                    image,
+                    name,
+                    brand,
+                    type,
+                    price,
+                    description,
+                    rating
                 },
-              };
+            };
 
             const result = await productCollection.findOneAndUpdate(query, update)
 
-           res.json({result});
+            res.json({ result });
         })
 
-        app.post("/add-to-cart",async (req,res)=>{
+        app.post("/add-to-cart", async (req, res) => {
             const result = await cartCollection.insertOne(req.body)
-            res.json({result})
+            res.json({ result })
         })
 
-        app.post("/get-cart-items",async (req,res)=>{
-            const {user} = req.body;
-            const result= await cartCollection.find({user}).toArray();
-            // console.log(data)
-            if(result.length>0)
-            {
-                res.json({result})
+        app.post("/get-cart-items", async (req, res) => {
+            const { user } = req.body;
+            const result = await cartCollection.find({ user }).toArray();
+           
+            if (result.length > 0) {
+                res.json({ result })
             }
-            else{
+            else {
                 res.json({ result: [] });
             }
-            
+
         })
 
-        app.delete("/delete-cart-item/:id",async (req,res)=>{
-            const {id} = req.params;
-            const result= await cartCollection.deleteOne({_id: ObjectId(id)})
+        app.delete("/delete-cart-item/:id", async (req, res) => {
+            const { id } = req.params;
+            const result = await cartCollection.deleteOne({ _id: ObjectId(id) })
             console.log(result)
-            res.json({result})
-           
-            
+            res.json({ result })
+
+
+        })
+
+        app.get("/",(req,res)=>{
+            res.send("Hello World")
         })
 
 
